@@ -16,6 +16,6 @@ public class AddToCartCommand implements Command {
     @Override
     public void execute() {
         orderService.addToCart(car);
-        System.out.println("Автомобиль " + car.getModel() + " добавлен в корзину.");
+        System.out.println("Команда выполнена: добавлен автомобиль в корзину.");
     }
 }

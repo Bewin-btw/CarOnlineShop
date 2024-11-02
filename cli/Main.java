@@ -1,203 +1,193 @@
 // файл: /cli/Main.java
 package cli;
 
-import models.*;
-import services.*;
-import patterns.command.*;
-import patterns.observer.InventoryNotifier;
-import patterns.strategy.*;
+import models.Car;
+import patterns.builder.CarBuilder;
+import patterns.chainofresponsibility.*;
+import patterns.decorator.SportPackageDecorator;
+import patterns.decorator.SunroofDecorator;
+import patterns.facade.CarShopFacade;
+import patterns.adapter.CreditCardAdapter;
+import patterns.adapter.PayPalAdapter;
+import patterns.adapter.PaymentAdapter;
+import services.InventoryService;
 
-import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
+    private static final CarShopFacade carShopFacade = new CarShopFacade();
     private static final InventoryService inventoryService = InventoryService.getInstance();
-    private static final OrderService orderService = new OrderService();
-    private static final PaymentService paymentService = new PaymentService();
-    private static final InventoryNotifier notifier = new InventoryNotifier(inventoryService);
-    private static final User currentUser = new User("Иван");
 
     public static void main(String[] args) {
         System.out.println("Добро пожаловать в онлайн-магазин автомобилей!");
-        notifier.addObserver(currentUser);
 
         boolean isRunning = true;
         while (isRunning) {
-            System.out.println("\nВведите команду или выберите номер: \n1. catalog\n2. add-to-cart\n3. checkout\n4. pay\n5. set-pricing\n6. subscribe\n7. exit");
+            System.out.println("\nВыберите команду или введите номер:");
+            System.out.println("1. catalog\n2. add-to-cart\n3. view-cart\n4. checkout\n5. set-discounts\n6. add-options\n7. pay\n8. exit");
             String command = scanner.nextLine().trim();
-
+        
             switch (command) {
                 case "1":
                 case "catalog":
-                    selectBrandAndDisplayCatalog();
+                    carShopFacade.showCatalog();
                     break;
                 case "2":
                 case "add-to-cart":
                     addToCart();
                     break;
                 case "3":
+                case "view-cart":
+                    viewCart();
+                    break;
+                case "4":
                 case "checkout":
                     checkout();
                     break;
-                case "4":
+                case "5":
+                case "set-discounts":
+                    applyDiscounts();
+                    break;
+                case "6":
+                case "add-options":
+                    addCarOptions();
+                    break;
+                case "7":
                 case "pay":
                     pay();
                     break;
-                case "5":
-                case "set-pricing":
-                    setPricingStrategy();
-                    break;
-                case "6":
-                case "subscribe":
-                    subscribeToInventoryNotifications();
-                    break;
-                case "7":
+                case "8":
                 case "exit":
                     isRunning = false;
                     break;
                 default:
-                    System.out.println("Неизвестная команда. Попробуйте снова.");
+                    System.out.println("Неверная команда. Попробуйте снова.");
             }
-        }
-    }
-
-    private static void selectBrandAndDisplayCatalog() {
-        List<String> brands = inventoryService.getAvailableBrands();
-        
-        if (brands.isEmpty()) {
-            System.out.println("Нет доступных автомобилей.");
-            return;
-        }
-
-        System.out.println("Выберите марку автомобиля:");
-        for (int i = 0; i < brands.size(); i++) {
-            System.out.println((i + 1) + ". " + brands.get(i));
-        }
-
-        int brandChoice = getUserChoice(brands.size());
-        if (brandChoice == -1) {
-            System.out.println("Неверный выбор марки.");
-            return;
-        }
-
-        String selectedBrand = brands.get(brandChoice - 1);
-        displayCarsByBrand(selectedBrand);
-    }
-
-    private static void displayCarsByBrand(String brand) {
-        System.out.println("Доступные автомобили марки " + brand + ":");
-        List<Car> cars = inventoryService.getCarsByBrand(brand);
-        
-        if (cars.isEmpty()) {
-            System.out.println("Нет доступных автомобилей для марки " + brand);
-            return;
-        }
-
-        for (Car car : cars) {
-            System.out.println("ID: " + car.getId() + " - " + car.getModel() + ", Цена: " + car.getPrice());
         }
     }
 
     private static void addToCart() {
-        List<String> brands = inventoryService.getAvailableBrands();
-        
-        if (brands.isEmpty()) {
-            System.out.println("Нет доступных автомобилей.");
-            return;
-        }
+        System.out.println("Введите марку автомобиля для добавления в корзину:");
+        String brand = scanner.nextLine().trim();
 
-        System.out.println("Выберите марку автомобиля для добавления в корзину:");
-        for (int i = 0; i < brands.size(); i++) {
-            System.out.println((i + 1) + ". " + brands.get(i));
-        }
+        System.out.println("Введите ID автомобиля:");
+        int carId = Integer.parseInt(scanner.nextLine().trim());
 
-        int brandChoice = getUserChoice(brands.size());
-        if (brandChoice == -1) {
-            System.out.println("Неверный выбор марки.");
-            return;
-        }
-
-        String selectedBrand = brands.get(brandChoice - 1);
-        List<Car> cars = inventoryService.getCarsByBrand(selectedBrand);
-
-        System.out.println("Введите ID автомобиля для добавления в корзину:");
-        for (Car car : cars) {
-            System.out.println("ID: " + car.getId() + " - " + car.getModel() + ", Цена: " + car.getPrice());
-        }
-
-        int carId = getUserChoice(cars.size());
-        if (carId == -1) {
-            System.out.println("Неверный выбор ID автомобиля.");
-            return;
-        }
-
-        Car car = inventoryService.getCarById(selectedBrand, carId);
-        if (car != null) {
-            Command addToCartCommand = new AddToCartCommand(orderService, car);
-            addToCartCommand.execute();
-            notifier.checkAvailability(car);
-        } else {
-            System.out.println("Автомобиль с таким ID не найден.");
-        }
+        carShopFacade.buyCar(brand, carId);  // Фасад обрабатывает покупку и добавление в корзину
     }
 
     private static void checkout() {
-        Order order = orderService.createOrder();
-        System.out.println("Заказ оформлен: " + order);
+        System.out.println("Оформление заказа...");
+
+        for (Car car : carShopFacade.getCart()) {
+            inventoryService.removeCar(car.getModel().split(" ")[0], car);  // Удаляем из инвентаря
+        }
+
+        carShopFacade.checkout();  // Завершение оформления заказа через фасад
+        System.out.println("Заказ успешно оформлен. Товары удалены из каталога.");
+    }
+
+    private static void viewCart() {
+        System.out.println("Ваши автомобили в корзине:");
+        if (carShopFacade.getCart().isEmpty()) {
+            System.out.println("Корзина пуста.");
+        } else {
+            for (Car car : carShopFacade.getCart()) {
+                System.out.println("ID: " + car.getId() + " - " + car.getDescription() + ", Цена: $" + car.getPrice());
+            }
+        }
+    }
+
+    private static void applyDiscounts() {
+        System.out.println("Выберите скидки для применения:");
+        System.out.println("1. VIP Скидка\n2. Сезонная Скидка\n3. Скидка от Менеджера");
+    
+        DiscountHandler vipDiscountHandler = new VIPDiscountHandler();
+        DiscountHandler seasonalDiscountHandler = new SeasonalDiscountHandler();
+        DiscountHandler managerDiscountHandler = new ManagerDiscountHandler();
+    
+        // Настраиваем цепочку в зависимости от выбора пользователя
+        System.out.println("Введите номера скидок, которые хотите применить (например, 1 2):");
+        String[] chosenDiscounts = scanner.nextLine().trim().split("\\s+");
+    
+        for (String discount : chosenDiscounts) {
+            switch (discount) {
+                case "1":
+                    vipDiscountHandler.setNext(seasonalDiscountHandler);
+                    break;
+                case "2":
+                    seasonalDiscountHandler.setNext(managerDiscountHandler);
+                    break;
+                case "3":
+                    managerDiscountHandler.setNext(null);
+                    break;
+                default:
+                    System.out.println("Некорректный выбор.");
+            }
+        }
+    
+        System.out.println("Применение скидок к автомобилям в корзине...");
+        for (Car car : carShopFacade.getCart()) {
+            double originalPrice = car.getPrice();
+            double discountedPrice = vipDiscountHandler.applyDiscount(car, originalPrice);
+            System.out.println("ID: " + car.getId() + " - Старая цена: $" + originalPrice + ", Новая цена: $" + discountedPrice);
+        }
+    }
+
+    private static void addCarOptions() {
+        System.out.println("Выберите ID автомобиля в корзине для добавления опций:");
+        int carId = Integer.parseInt(scanner.nextLine().trim());
+        Car car = carShopFacade.getCarByIdFromCart(carId);
+
+        if (car == null) {
+            System.out.println("Автомобиль не найден в корзине.");
+            return;
+        }
+
+        System.out.println("Выберите опцию для добавления:");
+        System.out.println("1. Sunroof\n2. Sport Package");
+        int option = Integer.parseInt(scanner.nextLine().trim());
+
+        switch (option) {
+            case 1:
+                car = new SunroofDecorator(car);
+                System.out.println("Добавлена опция: Sunroof.");
+                break;
+            case 2:
+                car = new SportPackageDecorator(car);
+                System.out.println("Добавлена опция: Sport Package.");
+                break;
+            default:
+                System.out.println("Неверный выбор опции.");
+                return;
+        }
+
+        carShopFacade.updateCarInCart(car);  // Обновляем автомобиль в корзине с новой опцией
     }
 
     private static void pay() {
-        System.out.println("Выберите метод оплаты (credit/paypal): ");
-        String method = scanner.nextLine().trim();
-        if (paymentService.processPayment(method)) {
-            System.out.println("Оплата прошла успешно.");
-        } else {
-            System.out.println("Оплата не удалась. Попробуйте другой метод.");
-        }
-    }
+        System.out.println("Выберите способ оплаты:\n1. PayPal\n2. Credit Card");
+        int paymentMethod = Integer.parseInt(scanner.nextLine().trim());
 
-    private static void setPricingStrategy() {
-        System.out.println("Выберите тип ценообразования: \n1. regular\n2. vip\n3. seasonal");
-        String choice = scanner.nextLine().trim();
-        switch (choice) {
-            case "1":
-            case "regular":
-                orderService.setPricingStrategy(new RegularPricingStrategy());
-                System.out.println("Установлена обычная стратегия ценообразования.");
+        PaymentAdapter paymentAdapter;
+        switch (paymentMethod) {
+            case 1:
+                paymentAdapter = new PayPalAdapter();
                 break;
-            case "2":
-            case "vip":
-                orderService.setPricingStrategy(new VIPPricingStrategy());
-                System.out.println("Установлена стратегия ценообразования для VIP клиентов.");
-                break;
-            case "3":
-            case "seasonal":
-                orderService.setPricingStrategy(new SeasonalDiscountStrategy());
-                System.out.println("Установлена сезонная стратегия ценообразования.");
+            case 2:
+                paymentAdapter = new CreditCardAdapter();
                 break;
             default:
-                System.out.println("Неверный выбор стратегии.");
+                System.out.println("Неверный выбор метода оплаты.");
+                return;
         }
-    }
 
-    private static void subscribeToInventoryNotifications() {
-        System.out.println("Вы подписаны на уведомления о наличии автомобилей.");
-    }
-
-    private static int getUserChoice(int maxOption) {
-        try {
-            String input = scanner.nextLine().trim();
-            if (input.isEmpty()) return -1;
-            
-            int choice = Integer.parseInt(input);
-            if (choice < 1 || choice > maxOption) {
-                return -1;
-            }
-            return choice;
-        } catch (NumberFormatException e) {
-            return -1;
+        double totalAmount = carShopFacade.calculateTotalPrice();
+        if (paymentAdapter.processPayment(totalAmount)) {
+            System.out.println("Оплата прошла успешно.");
+        } else {
+            System.out.println("Ошибка при оплате. Попробуйте снова.");
         }
     }
 }

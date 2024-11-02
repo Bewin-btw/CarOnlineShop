@@ -3,37 +3,29 @@ package services;
 
 import models.Car;
 import models.Order;
-import patterns.strategy.PricingStrategy;
-import patterns.strategy.RegularPricingStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService {
-    private List<Car> cart = new ArrayList<>();
-    private InventoryService inventoryService = InventoryService.getInstance();
+    private List<Car> cart = new ArrayList<>();  // Локальная корзина для хранения добавленных автомобилей
 
-    // Установка стандартной стратегии ценообразования по умолчанию
-    private PricingStrategy pricingStrategy = new RegularPricingStrategy();
-
-    public void setPricingStrategy(PricingStrategy strategy) {
-        this.pricingStrategy = strategy;
-    }
-
+    // Метод для добавления автомобиля в корзину
     public void addToCart(Car car) {
         cart.add(car);
+        System.out.println("Автомобиль добавлен в корзину: " + car);
     }
 
+    // Метод для оформления заказа, используя автомобили в корзине
     public Order createOrder() {
-        Order order = new Order(new ArrayList<>(cart));
-
-        // Удаление автомобилей из инвентаря после оформления заказа
-        for (Car car : cart) {
-            String brand = car.getModel().split(" ")[0];  // Предполагаем, что первая часть имени — марка
-            inventoryService.removeCar(brand, car);
-        }
-
-        cart.clear();
+        Order order = new Order(new ArrayList<>(cart)); // Создаем заказ с автомобилями из корзины
+        cart.clear(); // Очищаем корзину после оформления заказа
+        System.out.println("Создан заказ: " + order);
         return order;
+    }
+
+    // Возвращает список автомобилей в корзине
+    public List<Car> getCart() {
+        return cart;
     }
 }
