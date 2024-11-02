@@ -33,7 +33,11 @@ public class InventoryService {
     private void addCarsByBrand(String brand, int count, double price) {
         List<Car> cars = new ArrayList<>();
         for (int i = 1; i <= count; i++) {
-            cars.add(new Car(i, brand + " Model " + i, price + i * 500));
+            Car car = new Car(i, brand + " Model " + i, price + i * 500);
+            if (brand.equals("BMW")){
+                car.setSeasonalDiscountAvailable(true);
+            }
+            cars.add(car);
         }
         carInventory.put(brand, cars);
     }
