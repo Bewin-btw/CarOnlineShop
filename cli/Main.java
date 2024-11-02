@@ -5,9 +5,9 @@ import models.*;
 import services.*;
 import patterns.command.*;
 import patterns.observer.InventoryNotifier;
-import patterns.observer.Observer;
 import patterns.strategy.*;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,7 +26,7 @@ public class Main {
         boolean isRunning = true;
         while (isRunning) {
             System.out.println("\nВведите команду или выберите номер: \n1. catalog\n2. add-to-cart\n3. checkout\n4. pay\n5. set-pricing\n6. subscribe\n7. exit");
-            String command = scanner.nextLine();
+            String command = scanner.nextLine().trim();
 
             switch (command) {
                 case "1":
@@ -65,36 +65,75 @@ public class Main {
 
     private static void selectBrandAndDisplayCatalog() {
         List<String> brands = inventoryService.getAvailableBrands();
+        
+        if (brands.isEmpty()) {
+            System.out.println("Нет доступных автомобилей.");
+            return;
+        }
+
         System.out.println("Выберите марку автомобиля:");
         for (int i = 0; i < brands.size(); i++) {
             System.out.println((i + 1) + ". " + brands.get(i));
         }
 
-        int brandChoice = Integer.parseInt(scanner.nextLine()) - 1;
-        if (brandChoice >= 0 && brandChoice < brands.size()) {
-            String selectedBrand = brands.get(brandChoice);
-            displayCarsByBrand(selectedBrand);
-        } else {
+        int brandChoice = getUserChoice(brands.size());
+        if (brandChoice == -1) {
             System.out.println("Неверный выбор марки.");
+            return;
         }
+
+        String selectedBrand = brands.get(brandChoice - 1);
+        displayCarsByBrand(selectedBrand);
     }
 
     private static void displayCarsByBrand(String brand) {
         System.out.println("Доступные автомобили марки " + brand + ":");
         List<Car> cars = inventoryService.getCarsByBrand(brand);
+        
+        if (cars.isEmpty()) {
+            System.out.println("Нет доступных автомобилей для марки " + brand);
+            return;
+        }
+
         for (Car car : cars) {
             System.out.println("ID: " + car.getId() + " - " + car.getModel() + ", Цена: " + car.getPrice());
         }
     }
 
     private static void addToCart() {
-        System.out.println("Введите марку автомобиля:");
-        String brand = scanner.nextLine();
+        List<String> brands = inventoryService.getAvailableBrands();
         
-        System.out.println("Введите ID автомобиля:");
-        int carId = Integer.parseInt(scanner.nextLine());
+        if (brands.isEmpty()) {
+            System.out.println("Нет доступных автомобилей.");
+            return;
+        }
 
-        Car car = inventoryService.getCarById(brand, carId);
+        System.out.println("Выберите марку автомобиля для добавления в корзину:");
+        for (int i = 0; i < brands.size(); i++) {
+            System.out.println((i + 1) + ". " + brands.get(i));
+        }
+
+        int brandChoice = getUserChoice(brands.size());
+        if (brandChoice == -1) {
+            System.out.println("Неверный выбор марки.");
+            return;
+        }
+
+        String selectedBrand = brands.get(brandChoice - 1);
+        List<Car> cars = inventoryService.getCarsByBrand(selectedBrand);
+
+        System.out.println("Введите ID автомобиля для добавления в корзину:");
+        for (Car car : cars) {
+            System.out.println("ID: " + car.getId() + " - " + car.getModel() + ", Цена: " + car.getPrice());
+        }
+
+        int carId = getUserChoice(cars.size());
+        if (carId == -1) {
+            System.out.println("Неверный выбор ID автомобиля.");
+            return;
+        }
+
+        Car car = inventoryService.getCarById(selectedBrand, carId);
         if (car != null) {
             Command addToCartCommand = new AddToCartCommand(orderService, car);
             addToCartCommand.execute();
@@ -111,7 +150,7 @@ public class Main {
 
     private static void pay() {
         System.out.println("Выберите метод оплаты (credit/paypal): ");
-        String method = scanner.nextLine();
+        String method = scanner.nextLine().trim();
         if (paymentService.processPayment(method)) {
             System.out.println("Оплата прошла успешно.");
         } else {
@@ -121,7 +160,7 @@ public class Main {
 
     private static void setPricingStrategy() {
         System.out.println("Выберите тип ценообразования: \n1. regular\n2. vip\n3. seasonal");
-        String choice = scanner.nextLine();
+        String choice = scanner.nextLine().trim();
         switch (choice) {
             case "1":
             case "regular":
@@ -145,5 +184,20 @@ public class Main {
 
     private static void subscribeToInventoryNotifications() {
         System.out.println("Вы подписаны на уведомления о наличии автомобилей.");
+    }
+
+    private static int getUserChoice(int maxOption) {
+        try {
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) return -1;
+            
+            int choice = Integer.parseInt(input);
+            if (choice < 1 || choice > maxOption) {
+                return -1;
+            }
+            return choice;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 }

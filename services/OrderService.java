@@ -11,10 +11,13 @@ import java.util.List;
 
 public class OrderService {
     private List<Car> cart = new ArrayList<>();
+    private InventoryService inventoryService = InventoryService.getInstance();
+
+    // Установка стандартной стратегии ценообразования по умолчанию
     private PricingStrategy pricingStrategy = new RegularPricingStrategy();
 
-    public void setPricingStrategy(PricingStrategy pricingStrategy) {
-        this.pricingStrategy = pricingStrategy;
+    public void setPricingStrategy(PricingStrategy strategy) {
+        this.pricingStrategy = strategy;
     }
 
     public void addToCart(Car car) {
@@ -22,12 +25,14 @@ public class OrderService {
     }
 
     public Order createOrder() {
-        List<Car> discountedCars = new ArrayList<>();
+        Order order = new Order(new ArrayList<>(cart));
+
+        // Удаление автомобилей из инвентаря после оформления заказа
         for (Car car : cart) {
-            double discountedPrice = pricingStrategy.calculatePrice(car);
-            discountedCars.add(new Car(car.getId(), car.getModel(), discountedPrice));
+            String brand = car.getModel().split(" ")[0];  // Предполагаем, что первая часть имени — марка
+            inventoryService.removeCar(brand, car);
         }
-        Order order = new Order(discountedCars);
+
         cart.clear();
         return order;
     }

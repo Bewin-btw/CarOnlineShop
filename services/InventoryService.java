@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InventoryService {
-    private static InventoryService instance;  // Singleton instance
+    private static InventoryService instance;
     private Map<String, List<Car>> carInventory = new HashMap<>();
 
     private InventoryService() {
@@ -24,7 +24,6 @@ public class InventoryService {
     }
 
     private void addCars() {
-        // Добавление автомобилей по маркам
         addCarsByBrand("Toyota", 10, 20000);
         addCarsByBrand("Ford", 10, 30000);
         addCarsByBrand("BMW", 10, 40000);
@@ -34,7 +33,7 @@ public class InventoryService {
     private void addCarsByBrand(String brand, int count, double price) {
         List<Car> cars = new ArrayList<>();
         for (int i = 1; i <= count; i++) {
-            cars.add(new Car(i, brand + " Model " + i, price + i * 500));  // Уникальные цены для каждой машины
+            cars.add(new Car(i, brand + " Model " + i, price + i * 500));
         }
         carInventory.put(brand, cars);
     }
@@ -57,5 +56,13 @@ public class InventoryService {
 
     public boolean isAvailable(Car car) {
         return carInventory.values().stream().anyMatch(list -> list.contains(car));
+    }
+
+    // Новый метод для удаления автомобиля из инвентаря
+    public void removeCar(String brand, Car car) {
+        List<Car> cars = carInventory.get(brand);
+        if (cars != null) {
+            cars.remove(car);
+        }
     }
 }
