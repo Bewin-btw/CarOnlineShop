@@ -1,11 +1,11 @@
-// файл: /patterns/facade/CarShopFacade.java
 package patterns.facade;
 
 import models.Car;
 import services.InventoryService;
 import services.OrderService;
-
-import java.util.ArrayList;
+import patterns.state.SoldState;
+import patterns.state.ReservedState;
+import patterns.state.AvailableState;
 import java.util.List;
 
 public class CarShopFacade {
@@ -22,13 +22,22 @@ public class CarShopFacade {
 
     // Добавление автомобиля в корзину
     public void buyCar(String brand, int id) {
-        Car car = inventoryService.getCarById(brand, id);
+        Car car = inventoryService.getCarById(brand, id); // Получаем автомобиль по марке и ID
         if (car != null) {
-            orderService.addToCart(car);  // Добавляем автомобиль в корзину напрямую через OrderService
+            // Проверка состояния автомобиля перед добавлением в корзину
+            if (car.getState() instanceof SoldState) {
+                System.out.println("Автомобиль уже продан."); // Изменено сообщение на "уже продан."
+            } else if (car.getState() instanceof ReservedState) {
+                System.out.println("Автомобиль зарезервирован.");
+            } else {
+                addToCart(car); // Если автомобиль доступен, добавляем в корзину
+            }
         } else {
-            System.out.println("Автомобиль не найден.");
+            System.out.println("Автомобиль уже продан."); // Это сообщение выводится только если автомобиля нет в базе
         }
     }
+
+
 
     // Получение всех автомобилей в корзине
     public List<Car> getCart() {
@@ -42,8 +51,7 @@ public class CarShopFacade {
             return;
         }
 
-        orderService.createOrder();  // Оформляем заказ без передачи списка автомобилей
-        System.out.println("Заказ успешно оформлен.");
+        orderService.createOrder();
     }
 
     // Получение автомобиля из корзины по ID
@@ -72,5 +80,10 @@ public class CarShopFacade {
         return orderService.getCart().stream()
                 .mapToDouble(Car::getPrice)
                 .sum();
+    }
+
+    // Метод добавления автомобиля в корзину
+    public void addToCart(Car car) {
+        orderService.addToCart(car);  // Добавляем автомобиль в корзину
     }
 }

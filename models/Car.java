@@ -1,6 +1,10 @@
 // файл: /models/Car.java
 package models;
 
+import patterns.state.CarState;
+import patterns.state.AvailableState;
+
+
 public class Car {
     private int id;
     private String model;
@@ -10,11 +14,12 @@ public class Car {
     private boolean vip;
     private boolean managerApproved;
     private boolean seasonalDiscountAvailable;
-
+    private CarState state;
     public Car(int id, String model, double price) {
         this.id = id;
         this.model = model;
         this.price = price;
+        this.state = new AvailableState(); // Начальное состояние
     }
 
     public int getId() {
@@ -29,6 +34,15 @@ public class Car {
         return price;
     }
 
+    public CarState getState() { // Метод для получения состояния
+        return state;
+    }
+
+    public void setState(CarState state) { // Метод для установки состояния
+        this.state = state;
+    }
+
+
     public void setSunroof(boolean sunroof) {
         this.sunroof = sunroof;
     }
@@ -40,6 +54,7 @@ public class Car {
     public boolean isVip() {
         return vip;
     }
+
 
     public void setVip(boolean vip) {
         this.vip = vip;
@@ -65,6 +80,7 @@ public class Car {
         StringBuilder description = new StringBuilder(model + " ($" + price + ")");
         if (sunroof) description.append(", with Sunroof");
         if (sportPackage) description.append(", with Sport Package");
+        description.append(", Статус: ").append(state.getClass().getSimpleName());
         return description.toString();
     }
 

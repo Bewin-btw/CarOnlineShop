@@ -1,4 +1,3 @@
-// файл: /services/OrderService.java
 package services;
 
 import models.Car;
@@ -12,15 +11,20 @@ public class OrderService {
 
     // Метод для добавления автомобиля в корзину
     public void addToCart(Car car) {
-        cart.add(car);
-        System.out.println("Автомобиль добавлен в корзину: " + car);
+        if (car != null) {
+            cart.add(car);  // Добавляем автомобиль в корзину
+            System.out.println("Автомобиль добавлен в корзину: " + car);
+        } else {
+            System.out.println("Ошибка: Невозможно добавить автомобиль, так как он не найден.");
+        }
     }
 
     // Метод для оформления заказа, используя автомобили в корзине
+    // файл: /services/OrderService.java
     public Order createOrder() {
         Order order = new Order(new ArrayList<>(cart)); // Создаем заказ с автомобилями из корзины
         cart.clear(); // Очищаем корзину после оформления заказа
-        System.out.println("Создан заказ: " + order);
+        // Убираем вывод о создании заказа, чтобы избежать дублирования
         return order;
     }
 

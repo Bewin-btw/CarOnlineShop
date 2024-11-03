@@ -1,6 +1,8 @@
 // файл: /cli/Main.java
 package cli;
 
+import patterns.state.SoldState;
+import patterns.state.ReservedState;
 import models.Car;
 import patterns.builder.CarBuilder;
 import patterns.chainofresponsibility.*;
@@ -74,16 +76,35 @@ public class Main {
         System.out.println("Введите ID автомобиля:");
         int carId = Integer.parseInt(scanner.nextLine().trim());
 
-        carShopFacade.buyCar(brand, carId);  // Фасад обрабатывает покупку и добавление в корзину
+        Car car = inventoryService.getCarById(brand, carId);
+
+        // Проверяем состояние автомобиля
+        if (car == null) {
+            System.out.println("Автомобиль уже куплен.");
+            return;
+        } else if (car.getState() instanceof SoldState) {
+            System.out.println("Автомобиль уже куплен.");
+            return;
+        } else if (car.getState() instanceof ReservedState) {
+            System.out.println("Автомобиль зарезервирован.");
+            return;
+        }
+
+        // Если доступен, добавляем в корзину через фасад
+        carShopFacade.addToCart(car);
+        car.setState(new ReservedState()); // Изменяем состояние на Зарезервировано
     }
+
+
+
 
     private static void checkout() {
         System.out.println("Оформление заказа...");
 
         for (Car car : carShopFacade.getCart()) {
             inventoryService.removeCar(car.getModel().split(" ")[0], car);  // Удаляем из инвентаря
+            car.setState(new SoldState()); // Изменяем состояние на Продано
         }
-
         carShopFacade.checkout();  // Завершение оформления заказа через фасад
         System.out.println("Заказ успешно оформлен. Товары удалены из каталога.");
     }
