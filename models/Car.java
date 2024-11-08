@@ -1,4 +1,3 @@
-// файл: /models/Car.java
 package models;
 
 import patterns.state.CarState;

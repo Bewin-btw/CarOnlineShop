@@ -1,4 +1,3 @@
-// файл: /models/User.java
 package models;
 
 import patterns.observer.Observer;

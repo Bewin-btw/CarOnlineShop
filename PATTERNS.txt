@@ -1,0 +1,91 @@
+Design Patterns Implemented
+
+This project leverages several popular design patterns, each used to solve specific problems within the codebase. Below is a summary of each design pattern implemented in this project.
+
+ 1. Decorator Pattern
+   - Files: 
+     - `CarDecorator.java`
+     - `SportPackageDecorator.java`
+     - `SunroofDecorator.java`
+   - Description: This pattern is used to dynamically add functionalities to a class. 
+   In this project, the `CarDecorator` adds additional features, such as sport packages or sunroofs, to cars without altering the base class.
+
+ 2. Facade Pattern
+   - Files:
+     - `CarShopFacade.java`
+   - Description: The Facade pattern simplifies interactions between clients and complex subsystems. 
+   Here, the `CarShopFacade` provides a simplified interface for accessing various services related to car shop operations.
+
+ 3. Observer Pattern
+   - Files:
+     - `Observer.java`
+     - `Subject.java`
+     - `InventoryNotifier.java`
+   - Description: Used for establishing a one-to-many dependency, this pattern is ideal for notifying inventory changes in the application. The `Subject` and `Observer` interfaces allow objects to subscribe and receive updates, helping the application stay informed about inventory changes.
+
+ 4. Adapter Pattern
+   - Files:
+     - `CreditCardAdapter.java`
+     - `PayPalAdapter.java`
+     - `PaymentAdapter.java`
+   - Description: The Adapter pattern converts the interface of a class into another interface that the client expects. This is useful for adapting different payment methods to a unified payment processing system.
+
+ 5. State Pattern
+   - Files:
+     - `CarState.java`
+     - `AvailableState.java`
+     - `ReservedState.java`
+     - `SoldState.java`
+   - Description: This pattern allows an object to change its behavior when its state changes. In this project, the car's availability status (`Available`, `Reserved`, `Sold`) determines its behavior.
+
+ 6. Composite Pattern
+   - Files:
+     - `CarBrandComposite.java`
+     - `CarComponent.java`
+     - `CarLeaf.java`
+   - Description: The Composite pattern is used to treat individual objects and compositions of objects uniformly. 
+   Here, it might represent car brands with the ability to contain individual models or sub-brands.
+
+ 7. Chain of Responsibility Pattern
+   - Files:
+     - `DiscountHandler.java`
+     - `SeasonalDiscountHandler.java`
+     - `VIPDiscountHandler.java`
+     - `ManagerDiscountHandler.java`
+   - Description: This pattern allows passing a request along a chain of handlers. 
+   It is used here to apply different types of discounts, where each handler is responsible for applying a specific type of discount, depending on the customer's status or season.
+
+ 8. Command Pattern
+   - Files:
+     - `Command.java`
+     - `AddToCartCommand.java`
+   - Description: Encapsulates requests as objects, allowing the system to parameterize clients with requests and support undoable operations. 
+   The `AddToCartCommand` represents an action to add items to a shopping cart.
+
+ 9. Builder Pattern
+   - Files:
+     - `CarBuilder.java`
+   - Description: The Builder pattern constructs complex objects step by step. Here, it is used to construct car objects with various optional features, 
+   providing flexibility and readability.
+
+ 10. Factory Pattern
+   - Files:
+     - `CarFactory.java`
+   - Description: The Factory pattern is used to create instances of classes without exposing the instantiation logic. 
+   `CarFactory` is likely responsible for creating car objects, possibly with varying specifications.
+
+ 11. Strategy Pattern
+   - Files:
+     - `PricingStrategy.java`
+     - `RegularPricingStrategy.java`
+     - `VIPPricingStrategy.java`
+     - `SeasonalDiscountStrategy.java`
+   - Description: Defines a family of algorithms, encapsulates each one, and makes them interchangeable. 
+   Here, different pricing strategies are available depending on the customer type or season, such as VIP pricing or seasonal discounts.
+
+ Getting Started
+
+1. Clone the repository.
+2. Compile the code using the following command:
+   ```bash
+   javac -d bin src/**/*.java

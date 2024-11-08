@@ -1,4 +1,3 @@
-// файл: /cli/Main.java
 package cli;
 
 import patterns.state.SoldState;

@@ -1,4 +1,3 @@
-// файл: /models/Order.java
 package models;
 
 import java.util.List;
