@@ -1,4 +1,3 @@
-// файл: /services/InventoryService.java
 package services;
 
 import models.Car;

@@ -1,4 +1,3 @@
-// файл: /patterns/state/AvailableState.java
 package patterns.state;
 
 public class AvailableState implements CarState {

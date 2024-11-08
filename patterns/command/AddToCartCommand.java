@@ -1,4 +1,3 @@
-// файл: /patterns/command/AddToCartCommand.java
 package patterns.command;
 
 import models.Car;

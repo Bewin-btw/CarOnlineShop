@@ -1,4 +1,3 @@
-// файл: /patterns/adapter/PaymentAdapter.java
 package patterns.adapter;
 
 public interface PaymentAdapter {

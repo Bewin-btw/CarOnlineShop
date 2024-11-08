@@ -1,4 +1,3 @@
-// файл: /patterns/strategy/PricingStrategy.java
 package patterns.strategy;
 
 import models.Car;

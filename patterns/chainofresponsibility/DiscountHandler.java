@@ -1,4 +1,3 @@
-// файл: /patterns/chainofresponsibility/DiscountHandler.java
 package patterns.chainofresponsibility;
 
 import models.Car;

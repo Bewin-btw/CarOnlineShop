@@ -1,4 +1,3 @@
-// файл: /patterns/observer/InventoryNotifier.java
 package patterns.observer;
 
 import models.Car;

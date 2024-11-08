@@ -1,4 +1,3 @@
-// файл: /patterns/state/ReservedState.java
 package patterns.state;
 
 public class ReservedState implements CarState {

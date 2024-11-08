@@ -1,4 +1,3 @@
-// файл: /patterns/adapter/CreditCardAdapter.java
 package patterns.adapter;
 
 public class CreditCardAdapter implements PaymentAdapter {

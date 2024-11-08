@@ -1,4 +1,3 @@
-// файл: /patterns/composite/CarBrandComposite.java
 package patterns.composite;
 
 import java.util.ArrayList;

@@ -1,4 +1,3 @@
-// файл: /patterns/factory/CarFactory.java
 package patterns.factory;
 
 import models.Car;

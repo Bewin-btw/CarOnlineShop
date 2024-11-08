@@ -1,4 +1,3 @@
-// файл: /patterns/decorator/SunroofDecorator.java
 package patterns.decorator;
 
 import models.Car;

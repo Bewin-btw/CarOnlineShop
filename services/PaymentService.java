@@ -1,4 +1,3 @@
-// файл: /services/PaymentService.java
 package services;
 
 public class PaymentService {

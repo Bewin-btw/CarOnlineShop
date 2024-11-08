@@ -1,4 +1,3 @@
-// файл: /patterns/builder/CarBuilder.java
 package patterns.builder;
 
 import models.Car;

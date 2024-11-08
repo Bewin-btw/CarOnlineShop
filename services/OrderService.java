@@ -20,7 +20,6 @@ public class OrderService {
     }
 
     // Метод для оформления заказа, используя автомобили в корзине
-    // файл: /services/OrderService.java
     public Order createOrder() {
         Order order = new Order(new ArrayList<>(cart)); // Создаем заказ с автомобилями из корзины
         cart.clear(); // Очищаем корзину после оформления заказа

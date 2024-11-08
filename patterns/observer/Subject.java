@@ -1,4 +1,3 @@
-// файл: /patterns/observer/Subject.java
 package patterns.observer;
 
 import java.util.ArrayList;

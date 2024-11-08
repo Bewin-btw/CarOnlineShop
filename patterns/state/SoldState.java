@@ -1,4 +1,3 @@
-// файл: /patterns/state/SoldState.java
 package patterns.state;
 
 public class SoldState implements CarState {

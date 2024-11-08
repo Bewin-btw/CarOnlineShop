@@ -1,4 +1,3 @@
-// файл: /patterns/composite/CarLeaf.java
 package patterns.composite;
 
 import models.Car;

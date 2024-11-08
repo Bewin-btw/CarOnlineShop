@@ -1,4 +1,3 @@
-// файл: /patterns/decorator/CarDecorator.java
 package patterns.decorator;
 
 import models.Car;

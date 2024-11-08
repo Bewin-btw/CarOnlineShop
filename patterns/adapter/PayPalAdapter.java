@@ -1,4 +1,3 @@
-// файл: /patterns/adapter/PayPalAdapter.java
 package patterns.adapter;
 
 public class PayPalAdapter implements PaymentAdapter {
