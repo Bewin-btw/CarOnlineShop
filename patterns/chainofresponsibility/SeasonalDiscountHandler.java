@@ -1,4 +1,3 @@
-// файл: /patterns/chainofresponsibility/SeasonalDiscountHandler.java
 package patterns.chainofresponsibility;
 
 import models.Car;
@@ -6,10 +5,8 @@ import models.Car;
 public class SeasonalDiscountHandler extends DiscountHandler {
     @Override
     public double applyDiscount(Car car, double price) {
-        if (car.isSeasonalDiscountAvailable()) {
-            System.out.println("Applying discount");
-            price *= 0.85;  // 15% скидка
-        }
+        System.out.println("Applying Seasonal discount for car ID: " + car.getId());
+        price *= 0.95;  // 5% сезонная скидка
         return next != null ? next.applyDiscount(car, price) : price;
     }
 }

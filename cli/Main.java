@@ -124,32 +124,30 @@ public class Main {
         System.out.println("1. VIP Скидка\n2. Сезонная Скидка\n3. Скидка от Менеджера");
     
         // Создаем обработчики скидок
-        VIPDiscountHandler vipDiscountHandler = new VIPDiscountHandler();
-        SeasonalDiscountHandler seasonalDiscountHandler = new SeasonalDiscountHandler();
-        ManagerDiscountHandler managerDiscountHandler = new ManagerDiscountHandler();
+        DiscountHandler vipDiscountHandler = new VIPDiscountHandler();
+        DiscountHandler seasonalDiscountHandler = new SeasonalDiscountHandler();
+        DiscountHandler managerDiscountHandler = new ManagerDiscountHandler();
     
+        // Запрашиваем у пользователя номера скидок для применения
         System.out.println("Введите номера скидок, которые хотите применить (например, 1 2 3):");
         String[] chosenDiscounts = scanner.nextLine().trim().split("\\s+");
     
         System.out.println("Применение скидок к автомобилям в корзине...");
     
-        // Применяем скидки для каждого автомобиля в корзине
         for (Car car : carShopFacade.getCart()) {
             double originalPrice = car.getPrice();
             double discountedPrice = originalPrice;
     
+            // Применяем выбранные скидки
             for (String discount : chosenDiscounts) {
                 switch (discount) {
                     case "1":
-                        // Применяем VIP скидку
                         discountedPrice = vipDiscountHandler.applyDiscount(car, discountedPrice);
                         break;
                     case "2":
-                        // Применяем сезонную скидку
                         discountedPrice = seasonalDiscountHandler.applyDiscount(car, discountedPrice);
                         break;
                     case "3":
-                        // Применяем скидку от менеджера
                         discountedPrice = managerDiscountHandler.applyDiscount(car, discountedPrice);
                         break;
                     default:
@@ -157,11 +155,11 @@ public class Main {
                 }
             }
     
-            // Устанавливаем итоговую цену с учетом всех скидок
-            car.setPrice(discountedPrice);
+            car.setPrice(discountedPrice);  // Устанавливаем новую цену автомобиля с учетом скидки
             System.out.println("ID: " + car.getId() + " - Старая цена: $" + originalPrice + ", Новая цена: $" + discountedPrice);
         }
     }
+    
     
     
     

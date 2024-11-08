@@ -1,4 +1,3 @@
-// файл: /patterns/chainofresponsibility/ManagerDiscountHandler.java
 package patterns.chainofresponsibility;
 
 import models.Car;
@@ -6,10 +5,8 @@ import models.Car;
 public class ManagerDiscountHandler extends DiscountHandler {
     @Override
     public double applyDiscount(Car car, double price) {
-        if (car.isManagerApproved()) {
-            System.out.println("Applying manager discount");
-            price *= 0.95;  // 5% скидка
-        }
+        System.out.println("Applying Manager discount for car ID: " + car.getId());
+        price *= 0.97;  // 3% скидка от менеджера
         return next != null ? next.applyDiscount(car, price) : price;
     }
 }
