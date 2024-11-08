@@ -123,38 +123,48 @@ public class Main {
         System.out.println("Выберите скидки для применения:");
         System.out.println("1. VIP Скидка\n2. Сезонная Скидка\n3. Скидка от Менеджера");
     
-        DiscountHandler vipDiscountHandler = new VIPDiscountHandler();
-        DiscountHandler seasonalDiscountHandler = new SeasonalDiscountHandler();
-        DiscountHandler managerDiscountHandler = new ManagerDiscountHandler();
+        // Создаем обработчики скидок
+        VIPDiscountHandler vipDiscountHandler = new VIPDiscountHandler();
+        SeasonalDiscountHandler seasonalDiscountHandler = new SeasonalDiscountHandler();
+        ManagerDiscountHandler managerDiscountHandler = new ManagerDiscountHandler();
     
-        // Настраиваем цепочку в зависимости от выбора пользователя
-        System.out.println("Введите номера скидок, которые хотите применить (например, 1 2):");
+        System.out.println("Введите номера скидок, которые хотите применить (например, 1 2 3):");
         String[] chosenDiscounts = scanner.nextLine().trim().split("\\s+");
     
-        for (String discount : chosenDiscounts) {
-            switch (discount) {
-                case "1":
-                    vipDiscountHandler.setNext(seasonalDiscountHandler);
-                    break;
-                case "2":
-                    seasonalDiscountHandler.setNext(managerDiscountHandler);
-                    break;
-                case "3":
-                    managerDiscountHandler.setNext(null);
-                    break;
-                default:
-                    System.out.println("Некорректный выбор.");
-            }
-        }
-    
         System.out.println("Применение скидок к автомобилям в корзине...");
+    
+        // Применяем скидки для каждого автомобиля в корзине
         for (Car car : carShopFacade.getCart()) {
             double originalPrice = car.getPrice();
-            double discountedPrice = vipDiscountHandler.applyDiscount(car, originalPrice);
-            car.setPrice(discountedPrice); // Обновляем цену автомобиля со скидкой
+            double discountedPrice = originalPrice;
+    
+            for (String discount : chosenDiscounts) {
+                switch (discount) {
+                    case "1":
+                        // Применяем VIP скидку
+                        discountedPrice = vipDiscountHandler.applyDiscount(car, discountedPrice);
+                        break;
+                    case "2":
+                        // Применяем сезонную скидку
+                        discountedPrice = seasonalDiscountHandler.applyDiscount(car, discountedPrice);
+                        break;
+                    case "3":
+                        // Применяем скидку от менеджера
+                        discountedPrice = managerDiscountHandler.applyDiscount(car, discountedPrice);
+                        break;
+                    default:
+                        System.out.println("Некорректный выбор.");
+                }
+            }
+    
+            // Устанавливаем итоговую цену с учетом всех скидок
+            car.setPrice(discountedPrice);
             System.out.println("ID: " + car.getId() + " - Старая цена: $" + originalPrice + ", Новая цена: $" + discountedPrice);
         }
     }
+    
+    
+    
     
 
     private static void addCarOptions() {
