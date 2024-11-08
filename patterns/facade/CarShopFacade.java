@@ -5,7 +5,6 @@ import services.InventoryService;
 import services.OrderService;
 import patterns.state.SoldState;
 import patterns.state.ReservedState;
-import patterns.state.AvailableState;
 import java.util.List;
 
 public class CarShopFacade {

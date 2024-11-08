@@ -88,4 +88,11 @@ public class Car {
     public String toString() {
         return getDescription();
     }
+    // В файле Car.java
+public void setPrice(double price) {
+    this.price = price;
 }
+
+
+}
+

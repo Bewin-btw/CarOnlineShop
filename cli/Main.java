@@ -4,7 +4,6 @@ package cli;
 import patterns.state.SoldState;
 import patterns.state.ReservedState;
 import models.Car;
-import patterns.builder.CarBuilder;
 import patterns.chainofresponsibility.*;
 import patterns.decorator.SportPackageDecorator;
 import patterns.decorator.SunroofDecorator;
@@ -152,9 +151,11 @@ public class Main {
         for (Car car : carShopFacade.getCart()) {
             double originalPrice = car.getPrice();
             double discountedPrice = vipDiscountHandler.applyDiscount(car, originalPrice);
+            car.setPrice(discountedPrice); // Обновляем цену автомобиля со скидкой
             System.out.println("ID: " + car.getId() + " - Старая цена: $" + originalPrice + ", Новая цена: $" + discountedPrice);
         }
     }
+    
 
     private static void addCarOptions() {
         System.out.println("Выберите ID автомобиля в корзине для добавления опций:");
